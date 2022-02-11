@@ -57,14 +57,20 @@ fn guessing(guess_nr: i32) -> [char; 5] {
         //println!("len: {}", guess.len()); //<-- comment out for actual build, useful for debugging
         if guess.len() == 5 {
             //validate guess length -> proceed
-            //println!("You guessed: {}", guess); //<-- comment out for actual build, useful for debugging
-            let mut guessed_character_list: [char; 5] = ['a','a','a','a','a'];
-            for i in 0.. 5 {
-                //put chars of the guessed word into a list for easier comparison during guess_validation() and easier printout of the validated guess
-                let guessed_character = guess.chars().nth(i).unwrap();
-                guessed_character_list[i] = guessed_character;
+            //validate guess word to be in allowed word list
+            if wordlist_actions::word_allowed(&guess) {
+                //println!("You guessed: {}", guess); //<-- comment out for actual build, useful for debugging
+                let mut guessed_character_list: [char; 5] = ['a','a','a','a','a'];
+                for i in 0.. 5 {
+                    //put chars of the guessed word into a list for easier comparison during guess_validation() and easier printout of the validated guess
+                    let guessed_character = guess.chars().nth(i).unwrap();
+                    guessed_character_list[i] = guessed_character;
+                }
+                return guessed_character_list;
             }
-            return guessed_character_list;
+            else {
+                println!("Your guess has to be a valid word!");
+            }
         }
         else {
             println!("Your guess has to have 5 characters!");
