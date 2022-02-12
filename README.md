@@ -11,9 +11,6 @@ Using crossterm for coloring the output.
 
 HOW TO USE:
 
-1.
-Install Rust (https://rustup.rs/)
+1. Install Rust (https://rustup.rs/)
 
-2.
-For Unix based systems get the main version and run it with 'cargo run'
-For Windows systems get the Windows version and run it with 'cargo run'
+2. For Unix based systems get the main version and run it with 'cargo run'. For Windows systems get the Windows version and run it with 'cargo run'
