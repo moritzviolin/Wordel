@@ -142,6 +142,42 @@ fn char_in_list(list: [char;5],character: char) -> bool {
     return false
 }
 
+fn print_formatted_guess(guess: [char; 5], coloring: &Vec<&str>) {
+    #[allow(unused_must_use)]
+    for character in 0..5 {
+        //chose in which color which character should appear
+        match coloring[character] {
+            "green" => execute!(
+                stdout(),
+                SetForegroundColor(Color::Green),
+                Print(guess[character]),
+                ResetColor
+            ),
+
+            "red" => execute!(
+                stdout(),
+                SetForegroundColor(Color::Red),
+                Print(guess[character]),
+                ResetColor
+            ),
+
+            "black" => execute!(
+                stdout(),
+                SetForegroundColor(Color::Black),
+                Print(guess[character]),
+                ResetColor
+            ),
+
+            _ => execute!(
+                stdout(),
+                SetForegroundColor(Color::White),
+                Print(guess[character]),
+                ResetColor
+            ),
+        };
+    };
+
+}
 
 fn main() {
     let answer = wordlist_actions::random_word();
@@ -151,40 +187,7 @@ fn main() {
     for i in 1..=5 {
         let guess = guessing(i);
         let coloring = guess_validation(guess, answer_list);
-        #[allow(unused_must_use)]
-        for character in 0..5 {
-            //chose in which color which character should appear
-            match coloring[character] {
-                "green" => execute!(
-                    stdout(),
-                    SetForegroundColor(Color::Green),
-                    Print(guess[character]),
-                    ResetColor
-                ),
-
-                "red" => execute!(
-                    stdout(),
-                    SetForegroundColor(Color::Red),
-                    Print(guess[character]),
-                    ResetColor
-                ),
-
-                "black" => execute!(
-                    stdout(),
-                    SetForegroundColor(Color::Black),
-                    Print(guess[character]),
-                    ResetColor
-                ),
-
-                _ => execute!(
-                    stdout(),
-                    SetForegroundColor(Color::White),
-                    Print(guess[character]),
-                    ResetColor
-                ),
-            };
-        };
-
+        print_formatted_guess(guess, &coloring);
         print!{"\n"};
         if coloring == ["green", "green", "green", "green", "green"] {
             println!("You guessed correctly! Congrats");
