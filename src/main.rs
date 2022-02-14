@@ -1,8 +1,4 @@
-use std::io::stdout;
-use crossterm::{
-    execute,
-    style::{Color, Print, ResetColor, SetForegroundColor},
-};
+use termion::color;
 use std::io;
 use std::{thread, time};
 
@@ -11,28 +7,20 @@ mod wordlist;
 pub use crate::wordlist::wordlist_actions;
 
 fn print_manual() {
-    execute!(
-        stdout(),
-        Print("How to play: ------------------------------------------------------------\n"),
-        SetForegroundColor(Color::Black),
-        Print("Black "),
-        ResetColor,
-        Print("means that the letter does not appear in the solution \n"),
-        SetForegroundColor(Color::Red),
-        Print("Red "),
-        ResetColor,
-        Print("means that the letter appears at a different position in the solution \n"),
-        SetForegroundColor(Color::Green),
-        Print("Green "),
-        ResetColor,
-        Print("means that the letter is at the right place \n"),
-        Print("\n"),
-        Print("Word list:\n
-https://github.com/tabatkins/wordle-list\n
-------------------------------------------------------------------------- \n\n
-LET THE GUESSING BEGIN\n\n
-"),
-    );
+    println!("How to play: ------------------------------------------------------------");
+    println!("{}Black {}means that the letter does not appear in the solution", color::Fg(color::Black), color::Fg(color::White));
+    println!("");
+    println!("{}Red {}means that the letter appears at a different position in the solution", color::Fg(color::Red), color::Fg(color::White));
+    println!("");
+    println!("{}Green {}means that the letter is at the right place", color::Fg(color::Green), color::Fg(color::White));
+    println!("");
+    println!("Word list:");
+    println!("https://github.com/tabatkins/wordle-list");
+    println!("-------------------------------------------------------------------------");
+    println!("");
+    println!("");
+    println!("LET THE GUESSING BEGIN!");
+    println!("");
 }
 
 
@@ -65,7 +53,7 @@ fn guessing(guess_nr: i32) -> [char; 5] {
         println!("Enter your {} guess:", guess_number);
         let _result = reader.read_line(&mut guess);
         //remove the newline character added by pressing enter
-        guess.pop();
+        guess = guess.trim().to_string();
         //println!("len: {}", guess.len()); //<-- comment out for actual build, useful for debugging
         if guess.len() == 5 {
             //validate guess length -> proceed
@@ -151,41 +139,18 @@ fn main() {
     for i in 1..=5 {
         let guess = guessing(i);
         let coloring = guess_validation(guess, answer_list);
-        #[allow(unused_must_use)]
+
         for character in 0..5 {
             //chose in which color which character should appear
             match coloring[character] {
-                "green" => execute!(
-                    stdout(),
-                    SetForegroundColor(Color::Green),
-                    Print(guess[character]),
-                    ResetColor
-                ),
-
-                "red" => execute!(
-                    stdout(),
-                    SetForegroundColor(Color::Red),
-                    Print(guess[character]),
-                    ResetColor
-                ),
-
-                "black" => execute!(
-                    stdout(),
-                    SetForegroundColor(Color::Black),
-                    Print(guess[character]),
-                    ResetColor
-                ),
-
-                _ => execute!(
-                    stdout(),
-                    SetForegroundColor(Color::White),
-                    Print(guess[character]),
-                    ResetColor
-                ),
-            };
+                "green" => print!("{}{}", color::Fg(color::Green), guess[character]),
+                "red" => print!("{}{}", color::Fg(color::Red), guess[character]),
+                "black" => print!("{}{}", color::Fg(color::Black), guess[character]),
+                _ => print!("{}{}", color::Fg(color::White), guess[character])
+            }
         };
 
-        print!{"\n"};
+        print!{"\n{}", color::Fg(color::White)};
         if coloring == ["green", "green", "green", "green", "green"] {
             println!("You guessed correctly! Congrats");
             //waiting 10 seconds so the shell won't just close immediately
